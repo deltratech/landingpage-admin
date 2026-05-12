@@ -1,0 +1,11 @@
+.hs-accordion-group.tw-accordion {
+    .hs-accordion {
+        @apply border rounded-2xl px-6 py-4 bg-white dark:bg-gray-800 border-white dark:border-gray-700 overflow-hidden;
+        .hs-accordion-toggle {
+            @apply text-6 font-semibold text-gray-400 dark:text-gray-400 w-full flex justify-between items-center gap-x-3;
+        }
+        .hs-accordion-content {
+            @apply text-gray-400 w-full overflow-hidden transition-[height] duration-300;
+        }
+    }
+}

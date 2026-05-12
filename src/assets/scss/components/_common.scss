@@ -1,0 +1,39 @@
+.text-description {
+    @apply text-gray-500 dark:text-dark-15;
+}
+
+@keyframes animation-loader {
+    0% {
+        background-position: 0px 0px;
+    }
+
+    50% {
+        background-position: 400% 0%;
+    }
+
+    100% {
+        background-position: 0px 0px;
+    }
+}
+
+.loader-shadow::after,
+.loader-shadow::before {
+    background: linear-gradient(45deg, rgb(243 119 149), rgb(243 119 149), rgb(241, 245, 249), rgb(243 119 149), rgb(144, 122, 241)) 0% 0% / 300%;
+    animation: 20s linear 0s infinite normal none running animation-loader;
+}
+
+.chart-container .apexcharts-bar-area {
+    clip-path: inset(0% 0% -4px 0% round 7px);
+}
+
+.todo-list .simplebar-content {
+    @apply h-full;
+}
+
+.tPagination .swiper-pagination-bullet {
+    @apply bg-gray-400 border-4 border-transparent w-2 h-2 rounded-full flex items-center justify-center;
+}
+
+.tPagination .swiper-pagination-bullet-active {
+    @apply w-4 h-4 border-4 border-[#f0edfd] dark:bg-gray-700 bg-primary-500 rounded-full;
+}

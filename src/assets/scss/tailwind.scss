@@ -1,0 +1,25 @@
+/* 
+Template Name: QuickFrame - Admin & Dashboard Template
+Author: SRBThemes
+Version: 1.0.0
+*/
+
+@use "variables";
+@use "fonts/fonts";
+@use "components/common";
+@use "components/accordian";
+@use "components/badge";
+@use "components/card";
+@use "components/tooltip";
+@use "components/tabs";
+@use "components/menu";
+@use "components/pagination";
+@use "components/popover";
+@use "components/form";
+@use "components/slider";
+@use "components/editor";
+
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
