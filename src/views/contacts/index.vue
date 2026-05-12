@@ -82,7 +82,18 @@ const avatarColor = (name = '') => {
 }
 const initials = (name = '') => name.split(' ').map(s => s[0]).join('').slice(0, 2).toUpperCase()
 
-onMounted(async () => { contacts.value = await getContacts() ?? [] })
+const openMenu = ref(null)
+const toggleMenu = (id) => { openMenu.value = openMenu.value === id ? null : id }
+const closeMenu = () => { openMenu.value = null }
+
+const handleClickOutside = (e) => { if (!e.target.closest('[data-menu]')) closeMenu() }
+
+import { onUnmounted } from 'vue'
+onMounted(async () => {
+    contacts.value = await getContacts() ?? []
+    document.addEventListener('click', handleClickOutside)
+})
+onUnmounted(() => document.removeEventListener('click', handleClickOutside))
 </script>
 
 <template>
@@ -149,18 +160,17 @@ onMounted(async () => { contacts.value = await getContacts() ?? [] })
                                 <span v-else class="text-gray-400">—</span>
                             </td>
                             <td class="pr-5 pl-2 py-3 text-right">
-                                <!-- Dropdown via hover/focus -->
-                                <div class="relative inline-block group">
-                                    <button class="size-8 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 inline-flex items-center justify-center text-gray-500 transition-colors">
+                                <div class="relative inline-block" data-menu>
+                                    <button @click.stop="toggleMenu(c.id)" class="size-8 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 inline-flex items-center justify-center text-gray-500 transition-colors">
                                         <svg class="size-4" fill="currentColor" viewBox="0 0 24 24"><circle cx="12" cy="12" r="1.5" /><circle cx="19" cy="12" r="1.5" /><circle cx="5" cy="12" r="1.5" /></svg>
                                     </button>
-                                    <div class="absolute right-0 top-full mt-1 z-30 min-w-[140px] py-1.5 bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-700 rounded-lg shadow-dialog pop-in hidden group-focus-within:block">
-                                        <button @click="openEdit(c)" class="w-full px-3 py-1.5 text-[13px] flex items-center gap-2 text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-700/60 transition-colors">
+                                    <div v-if="openMenu === c.id" class="absolute right-0 top-full mt-1 z-30 min-w-[140px] py-1.5 bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-700 rounded-lg shadow-dialog pop-in">
+                                        <button @click="closeMenu(); openEdit(c)" class="w-full px-3 py-1.5 text-[13px] flex items-center gap-2 text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-700/60 transition-colors">
                                             <svg class="size-[14px]" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" /><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" /></svg>
                                             Edit
                                         </button>
                                         <div class="my-1 h-px bg-gray-100 dark:bg-gray-700" />
-                                        <button @click="confirmDelete(c)" class="w-full px-3 py-1.5 text-[13px] flex items-center gap-2 text-error-600 hover:bg-error-50 dark:hover:bg-error-500/10 transition-colors">
+                                        <button @click="closeMenu(); confirmDelete(c)" class="w-full px-3 py-1.5 text-[13px] flex items-center gap-2 text-error-600 hover:bg-error-50 dark:hover:bg-error-500/10 transition-colors">
                                             <svg class="size-[14px]" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6" /><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6" /><path d="M10 11v6M14 11v6" /><path d="M9 6V4a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v2" /></svg>
                                             Delete
                                         </button>

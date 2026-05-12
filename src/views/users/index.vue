@@ -168,9 +168,7 @@ onMounted(getUsers)
                                 <button @click="openEdit(user)" class="size-7 rounded-md inline-flex items-center justify-center text-gray-400 hover:text-brand-primary hover:bg-brand-primary/[0.07] dark:hover:bg-brand-primary/10 transition-colors" title="Edit">
                                     <svg class="size-[14px]" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
                                 </button>
-                                <button @click="confirmDelete(user.id)" class="size-7 rounded-md inline-flex items-center justify-center text-gray-400 hover:text-error-600 hover:bg-error-50 dark:hover:bg-error-500/10 transition-colors" title="Delete">
-                                    <svg class="size-[14px]" fill="currentColor" viewBox="0 0 24 24"><path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM8 9h8v10H8V9zm7.5-5-1-1h-5l-1 1H5v2h14V4z"/></svg>
-                                </button>
+                             
                             </div>
                         </td>
                     </tr>

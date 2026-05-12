@@ -10,6 +10,7 @@ const router = useRouter()
 const authStore = useAuthStore()
 
 const displayName = computed(() => authStore.displayName)
+const role = computed(() => authStore.role)
 const userInitials = computed(() => authStore.initials)
 
 const collapsed = () => layout.sidebar === 'collapse'
@@ -113,7 +114,7 @@ const isActive = (to) => route.path === to || route.path.startsWith(to + '/')
                 <div class="size-8 rounded-full bg-gradient-to-br from-brand-accent to-brand-primary flex items-center justify-center text-white text-[12px] font-semibold flex-shrink-0">{{ userInitials }}</div>
                 <div v-if="!collapsed()" class="flex-1 min-w-0">
                     <div class="text-[13px] font-semibold truncate text-gray-900 dark:text-white">{{ displayName }}</div>
-                    <div class="text-[11px] text-gray-400 truncate">Owner</div>
+                    <div class="text-[11px] text-gray-400 truncate">Superadmin</div>
                 </div>
                 <button
                     @click="logout"

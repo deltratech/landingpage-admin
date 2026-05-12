@@ -10,6 +10,20 @@ const tab = ref('all')
 const showConfirm = ref(false)
 const deleteId = ref(null)
 const flashMsg = ref('')
+const openMenu = ref(null)
+
+const toggleMenu = (id) => { openMenu.value = openMenu.value === id ? null : id }
+const closeMenu = () => { openMenu.value = null }
+
+const handleClickOutside = (e) => {
+    if (!e.target.closest('[data-menu]')) closeMenu()
+}
+onMounted(async () => {
+    posts.value = await getPosts() ?? []
+    document.addEventListener('click', handleClickOutside)
+})
+import { onUnmounted } from 'vue'
+onUnmounted(() => document.removeEventListener('click', handleClickOutside))
 
 const flash = (msg) => {
     flashMsg.value = msg
@@ -37,7 +51,6 @@ const avatarColor = (name = '') => {
 }
 const initials = (name = '') => name.split(' ').map(s => s[0]).join('').slice(0, 2).toUpperCase()
 
-onMounted(async () => { posts.value = await getPosts() ?? [] })
 </script>
 
 <template>
@@ -73,7 +86,7 @@ onMounted(async () => { posts.value = await getPosts() ?? [] })
         <div class="bg-white dark:bg-gray-800 rounded-xl shadow-card border border-gray-100 dark:border-gray-700/80">
             <div v-if="loading" class="py-12 text-center text-[13px] text-gray-400">Loading…</div>
             <div v-else-if="error" class="py-12 text-center text-error-500 text-[13px]">{{ error }}</div>
-            <div v-else class="overflow-x-auto">
+            <div v-else>
                 <table class="w-full text-[13px]">
                     <thead>
                         <tr class="text-[10px] uppercase tracking-wider text-gray-400 border-b border-gray-100 dark:border-gray-700/60">
@@ -108,17 +121,17 @@ onMounted(async () => { posts.value = await getPosts() ?? [] })
                                 {{ p.createdAt ? new Date(p.createdAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) : '—' }}
                             </td>
                             <td class="pr-5 pl-2 py-3 text-right">
-                                <div class="relative inline-block group">
-                                    <button class="size-8 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 inline-flex items-center justify-center text-gray-500 transition-colors">
+                                <div class="relative inline-block" data-menu>
+                                    <button @click.stop="toggleMenu(p.id)" class="size-8 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 inline-flex items-center justify-center text-gray-500 transition-colors">
                                         <svg class="size-4" fill="currentColor" viewBox="0 0 24 24"><circle cx="12" cy="12" r="1.5" /><circle cx="19" cy="12" r="1.5" /><circle cx="5" cy="12" r="1.5" /></svg>
                                     </button>
-                                    <div class="absolute right-0 top-full mt-1 z-30 min-w-[140px] py-1.5 bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-700 rounded-lg shadow-dialog pop-in hidden group-focus-within:block">
-                                        <button @click="router.push(`/posts/${p.id}/edit`)" class="w-full px-3 py-1.5 text-[13px] flex items-center gap-2 text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-700/60 transition-colors">
+                                    <div v-if="openMenu === p.id" class="absolute right-0 top-full mt-1 z-30 min-w-[140px] py-1.5 bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-700 rounded-lg shadow-dialog pop-in">
+                                        <button @click="closeMenu(); router.push(`/posts/${p.id}/edit`)" class="w-full px-3 py-1.5 text-[13px] flex items-center gap-2 text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-700/60 transition-colors">
                                             <svg class="size-[14px]" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" /><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" /></svg>
                                             Edit
                                         </button>
                                         <div class="my-1 h-px bg-gray-100 dark:bg-gray-700" />
-                                        <button @click="confirmDelete(p.id)" class="w-full px-3 py-1.5 text-[13px] flex items-center gap-2 text-error-600 hover:bg-error-50 dark:hover:bg-error-500/10 transition-colors">
+                                        <button @click="closeMenu(); confirmDelete(p.id)" class="w-full px-3 py-1.5 text-[13px] flex items-center gap-2 text-error-600 hover:bg-error-50 dark:hover:bg-error-500/10 transition-colors">
                                             <svg class="size-[14px]" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6" /><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6" /><path d="M10 11v6M14 11v6" /></svg>
                                             Delete
                                         </button>
