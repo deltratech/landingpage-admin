@@ -124,7 +124,7 @@ onUnmounted(() => document.removeEventListener('click', handleClickOutside))
         <div class="bg-white dark:bg-gray-800 rounded-xl shadow-card border border-gray-100 dark:border-gray-700/80">
             <div v-if="loading" class="py-12 text-center text-[13px] text-gray-400">Loading…</div>
             <div v-else-if="error" class="py-12 text-center text-error-500 text-[13px]">{{ error }}</div>
-            <div v-else class="overflow-x-auto">
+            <div v-else>
                 <table class="w-full text-[13px]">
                     <thead>
                         <tr class="text-[10px] uppercase tracking-wider text-gray-400 border-b border-gray-100 dark:border-gray-700/60">
