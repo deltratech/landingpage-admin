@@ -12,9 +12,21 @@ module.exports = plugin(function ({ addComponents }) {
             '@apply text-xs leading-[18px] uppercase mb-2.5 ml-[15px] mt-5 text-gray-900 font-semibold dark:text-white': {},
         },
         '.menu-link': {
-            '@apply h-11 flex items-center relative mb-1 px-[18px] text-gray-500 dark:text-gray-400 transition duration-300 ease-linear hover:text-error-400 hover:bg-gray-900 bg-opacity-[0.04] hover:bg-opacity-[0.04] dark:hover:bg-gray-100/5 rounded-full [&.active]:text-error-400 [&.active]:bg-error-25 dark:[&.active]:bg-gray-800': {},
+            '@apply h-11 flex items-center relative mb-1 px-[18px] text-gray-500 dark:text-gray-400 transition duration-300 ease-linear rounded-full': {},
+            'color': 'inherit',
+            '&:hover': {
+                color: 'var(--color-primary)',
+                backgroundColor: 'color-mix(in srgb, var(--color-accent) 10%, transparent)',
+            },
+            '&.active': {
+                color: 'var(--color-primary)',
+                backgroundColor: 'color-mix(in srgb, var(--color-accent) 10%, transparent)',
+            },
+            '.dark &:hover, .dark &.active': {
+                backgroundColor: 'color-mix(in srgb, var(--color-accent) 15%, transparent)',
+            },
             'span' : {
-                '@apply text-sm font-medium whitespace-nowrap leading-[17px] ps-[0.8rem]': {},
+                '@apply font-medium whitespace-nowrap leading-[17px] ps-[0.8rem]': {},
             },
             'svg': {
                 '@apply inline-block text-lg fill-current size-[18px] min-w-[18px]': {},

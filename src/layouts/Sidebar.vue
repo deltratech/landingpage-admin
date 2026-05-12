@@ -1,124 +1,130 @@
 <script setup>
-import { RouterLink } from 'vue-router'
-import simplebar from 'simplebar-vue'
-import { layout, toggleSidebarCollapse } from '@/stores/layout'
+import { RouterLink, useRoute } from 'vue-router'
+import { layout } from '@/stores/layout'
+import { useAuthStore } from '@/stores/auth'
+import { useRouter } from 'vue-router'
+import { computed } from 'vue'
 
+const route = useRoute()
+const router = useRouter()
+const authStore = useAuthStore()
 
+const displayName = computed(() => authStore.displayName)
+const userInitials = computed(() => authStore.initials)
+
+const collapsed = () => layout.sidebar === 'collapse'
+
+const logout = () => {
+    authStore.logout()
+    router.push('/login')
+}
+
+const NAV = [
+    {
+        section: 'Overview',
+        items: [
+            { to: '/dashboard', name: 'dashboard', label: 'Dashboard' },
+        ],
+    },
+    {
+        section: 'Management',
+        items: [
+            { to: '/contacts', name: 'contacts', label: 'Contacts' },
+            { to: '/users', name: 'users', label: 'Users' },
+        ],
+    },
+    {
+        section: 'Content',
+        items: [
+            { to: '/posts', name: 'posts', label: 'Posts' },
+        ],
+    },
+]
+
+const isActive = (to) => route.path === to || route.path.startsWith(to + '/')
 </script>
 
 <template>
-    <div class="fixed  inset-y-0 ltr:-start-[280px] ltr:xl:start-0 rtl:-right-[280px] rtl:xl:right-0 hs-overlay hs-overlay-open:start-0 bg-white dark:bg-gray-900 border-r rtl:border-e rtl:border-r-0 border-dashed dark:border-none w-sidebar z-sidebar transition-width duration-200 ease-in-out"
-        :class="{ 'mini-sidebar': layout.sidebar === 'collapse' }">
-        <div class="flex items-center justify-between pt-[17px] pb-2 pl-8 pr-4 h-[70px]">
-            <RouterLink to="/dashboard">
-                <h5>Deltra Admin</h5>
+    <aside
+        class="flex-shrink-0 flex flex-col bg-white dark:bg-gray-900 border-r border-gray-100 dark:border-gray-800 transition-[width] duration-200 ease-out overflow-hidden"
+        :style="{ width: collapsed() ? '72px' : '260px' }"
+    >
+        <!-- Logo -->
+        <div class="h-[60px] flex items-center gap-2.5 px-4 border-b border-gray-100 dark:border-gray-800 flex-shrink-0">
+            <RouterLink to="/dashboard" class="flex items-center gap-2.5 min-w-0">
+                <img src="@/assets/images/deltratech-logo.png" alt="Deltra" class="size-8 rounded-lg object-contain flex-shrink-0" />
+                <div v-if="!collapsed()" class="overflow-hidden">
+                    <div class="font-semibold text-[15px] tracking-tight whitespace-nowrap text-gray-900 dark:text-white">Deltra Admin</div>
+                    <div class="text-[11px] text-gray-400 leading-none whitespace-nowrap">Workspace</div>
+                </div>
             </RouterLink>
-            
-            <!-- Mobile screen close button -->
-            <button aria-label="Close" tabindex="0" type="button"
-                class="inline-block p-2 text-gray-500 close-sidebar btn-dark-icon-hover size-10 xl:!hidden"
-                @click="toggleSidebarCollapse">
-                <svg class="inline-block text-lg fill-current size-6" focusable="false" aria-hidden="true"
-                    viewBox="-2 0 19 16">
-                    <path class="opacity-40"
-                        d="M1 1.75C0.447187 1.75 0 2.19719 0 2.75V12.75C0 13.3028 0.447187 13.75 1 13.75C1.55281 13.75 2 13.3028 2 12.75V2.75C2 2.19719 1.55281 1.75 1 1.75Z">
-                    </path>
-                    <path
-                        d="M8.37634 3.20966C8.76697 2.81903 9.39978 2.81903 9.79041 3.20966C10.181 3.60028 10.181 4.23153 9.78978 4.62278L7.49666 6.91591H13.0842C13.637 6.91591 14.0842 7.36309 14.0842 7.91591C14.0842 8.46872 13.637 8.91591 13.0842 8.91591H7.49978L9.79119 11.209C9.9865 11.404 10.0842 11.6597 10.0842 11.9159C10.0842 12.1722 9.98728 12.4284 9.79041 12.6237C9.39978 13.0143 8.76697 13.0143 8.37634 12.6237L4.37634 8.62372C3.98572 8.23309 3.98572 7.60028 4.37634 7.20966L8.37634 3.20966Z">
-                    </path>
-                </svg>
-            </button>
-                     
         </div>
-        <simplebar class="h-[calc(100%-68px)] overflow-y-auto overflow-x-hidden">
-            
-            <div class="px-4" id="navbar_links">
-                <RouterLink to="/dashboard" class="menu-link hover:bg-opacity-[0.04] rounded-full" active-class="active-link" exact-active-class="active-link">
-                    <svg focusable="false" aria-hidden="true" viewBox="0 0 14 12">
-                        <path
-                            d="M7 2.8V1.05C7 0.470094 7.47031 0 8.05 0H12.95C13.5297 0 14 0.470094 14 1.05V5.95C14 6.52969 13.5297 7 12.95 7H8.05C7.47031 7 7 6.52969 7 5.95V4.9H8.4V5.6H12.6V1.4H8.4V2.8H7Z">
-                        </path>
-                        <path class="opacity-40"
-                            d="M5.24998 1.05C5.24998 1.62991 4.77967 2.1 4.19998 2.1C3.62029 2.1 3.14998 1.62991 3.14998 1.05C3.14998 0.470094 3.62029 0 4.19998 0C4.77967 0 5.24998 0.470094 5.24998 1.05ZM4.02498 7.7V10.5C4.02498 10.8872 3.71217 11.2 3.32498 11.2C2.93779 11.2 2.62498 10.8872 2.62498 10.5V5.61969L2.00001 6.66094C1.80095 6.99125 1.37089 7.09844 1.03948 6.89937C0.708074 6.70031 0.600887 6.27156 0.800168 5.93906L2.07482 3.81938C2.45436 3.18719 3.13686 2.8 3.87404 2.8H8.74998C9.13717 2.8 9.44998 3.11281 9.44998 3.5C9.44998 3.88719 9.13717 4.2 8.74998 4.2H5.77498V10.5C5.77498 10.8872 5.46217 11.2 5.07498 11.2C4.68779 11.2 4.37498 10.8872 4.37498 10.5V7.7H4.02498Z">
-                        </path>
-                    </svg>
-                    <span>Dashboard</span>
-                </RouterLink>
-               
-                <p class="mt-6 menu-title">Management</p>
-                <div class="hs-accordion-group">
 
-                    <!-- Contacts -->
-                    <RouterLink to="/contacts" class="menu-link hover:bg-opacity-[0.04] rounded-full"
-                        active-class="active-link">
-                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
-                            <path d="M20 2H4C2.9 2 2 2.9 2 4V22L6 18H20C21.1 18 22 17.1 22 16V4C22 2.9 21.1 2 20 2ZM20 16H5.17L4 17.17V4H20V16Z"/>
-                        </svg>
-                        <span>Contacts</span>
-                    </RouterLink>
-
+        <!-- Nav -->
+        <nav class="flex-1 overflow-y-auto scroll-thin px-3 py-4 space-y-5">
+            <div v-for="sec in NAV" :key="sec.section">
+                <div v-if="!collapsed()" class="px-3 mb-1.5 text-[10px] font-semibold uppercase tracking-wider text-gray-400 dark:text-gray-500">
+                    {{ sec.section }}
                 </div>
+                <div class="space-y-0.5">
+                    <RouterLink
+                        v-for="item in sec.items"
+                        :key="item.to"
+                        :to="item.to"
+                        :title="collapsed() ? item.label : undefined"
+                        class="relative flex items-center gap-3 rounded-lg py-2 text-[13px] font-medium transition-colors no-underline"
+                        :class="[
+                            collapsed() ? 'justify-center px-2' : 'px-3',
+                            isActive(item.to)
+                                ? 'bg-brand-primary/[0.07] text-brand-primary dark:bg-brand-primary/10 dark:text-brand-accent'
+                                : 'text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 hover:text-gray-900 dark:hover:text-gray-100'
+                        ]"
+                    >
+                        <!-- Active left bar -->
+                        <span v-if="isActive(item.to)" class="absolute left-0 top-1.5 bottom-1.5 w-[3px] rounded-r-full bg-brand-primary" />
 
-                <p class="mt-6 menu-title">Content</p>
-                <div class="hs-accordion-group">
-
-                    <!-- Posts -->
-                    <RouterLink to="/posts" class="menu-link hover:bg-opacity-[0.04] rounded-full"
-                        active-class="active-link">
-                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
-                            <path d="M19 3H5C3.9 3 3 3.9 3 5V19C3 20.1 3.9 21 5 21H19C20.1 21 21 20.1 21 19V5C21 3.9 20.1 3 19 3ZM19 19H5V5H19V19ZM17 7H7V9H17V7ZM17 11H7V13H17V11ZM14 15H7V17H14V15Z"/>
+                        <!-- Icon -->
+                        <svg v-if="item.name === 'dashboard'" class="size-[18px] flex-shrink-0" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
+                            <rect x="3" y="3" width="7" height="9" rx="1.5" /><rect x="14" y="3" width="7" height="5" rx="1.5" /><rect x="14" y="12" width="7" height="9" rx="1.5" /><rect x="3" y="16" width="7" height="5" rx="1.5" />
                         </svg>
-                        <span>Posts</span>
-                    </RouterLink>
-
-                    <!-- Testimonials -->
-                    <RouterLink to="/testimonials" class="menu-link hover:bg-opacity-[0.04] rounded-full"
-                        active-class="active-link">
-                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
-                            <path d="M11.48 3.499a.562.562 0 011.04 0l2.125 5.111a.563.563 0 00.475.345l5.518.442c.499.040.701.663.321.988l-4.204 3.602a.563.563 0 00-.182.557l1.285 5.385a.562.562 0 01-.84.61l-4.725-2.885a.563.563 0 00-.586 0L6.982 20.54a.562.562 0 01-.84-.61l1.285-5.386a.562.562 0 00-.182-.557l-4.204-3.602a.563.563 0 01.321-.988l5.518-.442a.563.563 0 00.475-.345L11.48 3.5z"/>
+                        <svg v-else-if="item.name === 'contacts'" class="size-[18px] flex-shrink-0" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
+                            <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" /><circle cx="9" cy="7" r="4" /><path d="M22 21v-2a4 4 0 0 0-3-3.87" /><path d="M16 3.13a4 4 0 0 1 0 7.75" />
                         </svg>
-                        <span>Testimonials</span>
-                    </RouterLink>
-
-                    <!-- FAQs -->
-                    <RouterLink to="/faqs" class="menu-link hover:bg-opacity-[0.04] rounded-full"
-                        active-class="active-link">
-                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
-                            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 17h-2v-2h2v2zm2.07-7.75l-.9.92C13.45 12.9 13 13.5 13 15h-2v-.5c0-1.1.45-2.1 1.17-2.83l1.24-1.26c.37-.36.59-.86.59-1.41 0-1.1-.9-2-2-2s-2 .9-2 2H8c0-2.21 1.79-4 4-4s4 1.79 4 4c0 .88-.36 1.68-.93 2.25z"/>
+                        <svg v-else-if="item.name === 'users'" class="size-[18px] flex-shrink-0" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
+                            <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" /><circle cx="9" cy="7" r="4" /><line x1="23" y1="11" x2="17" y2="11" /><line x1="20" y1="8" x2="20" y2="14" />
                         </svg>
-                        <span>FAQs</span>
-                    </RouterLink>
+                        <svg v-else-if="item.name === 'posts'" class="size-[18px] flex-shrink-0" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
+                            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" /><polyline points="14 2 14 8 20 8" /><line x1="8" y1="13" x2="16" y2="13" /><line x1="8" y1="17" x2="13" y2="17" />
+                        </svg>
 
+<span v-if="!collapsed()" class="flex-1 text-left truncate">{{ item.label }}</span>
+                    </RouterLink>
                 </div>
-
-                <p class="mt-6 menu-title">Assets</p>
-                <div class="hs-accordion-group">
-
-                    <!-- Media -->
-                    <RouterLink to="/media" class="menu-link hover:bg-opacity-[0.04] rounded-full"
-                        active-class="active-link">
-                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
-                            <path d="M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zM8.5 13.5l2.5 3.01L14.5 12l4.5 6H5l3.5-4.5z"/>
-                        </svg>
-                        <span>Media Library</span>
-                    </RouterLink>
-
-                </div>
-
             </div>
-        </simplebar>
-    </div>
+        </nav>
+
+        <!-- Footer: user + sign out -->
+        <div class="p-3 border-t border-gray-100 dark:border-gray-800 flex-shrink-0">
+            <div
+                class="flex items-center gap-2.5 rounded-lg p-2 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
+                :class="collapsed() ? 'justify-center' : ''"
+            >
+                <!-- Avatar initials -->
+                <div class="size-8 rounded-full bg-gradient-to-br from-brand-accent to-brand-primary flex items-center justify-center text-white text-[12px] font-semibold flex-shrink-0">{{ userInitials }}</div>
+                <div v-if="!collapsed()" class="flex-1 min-w-0">
+                    <div class="text-[13px] font-semibold truncate text-gray-900 dark:text-white">{{ displayName }}</div>
+                    <div class="text-[11px] text-gray-400 truncate">Owner</div>
+                </div>
+                <button
+                    @click="logout"
+                    title="Sign out"
+                    class="size-8 rounded-full inline-flex items-center justify-center text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700 hover:text-gray-700 dark:hover:text-gray-200 transition-colors flex-shrink-0"
+                >
+                    <svg class="size-[15px]" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
+                        <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" /><polyline points="16 17 21 12 16 7" /><line x1="21" y1="12" x2="9" y2="12" />
+                    </svg>
+                </button>
+            </div>
+        </div>
+    </aside>
 </template>
-
-<style>
-.active-link {
-    --tw-bg-opacity: 1
-    background-color: rgb(254 241 244 / var(--tw-bg-opacity));
-    --tw-text-opacity: 1;
-    color: var(--color-primary);
-}
-
-.active-link:hover {
-    background-color: transparent;
-}
-</style>

@@ -39,24 +39,6 @@ const routes = [
                 component: () => import("@/views/posts/index.vue"),
                 meta: { hideFooter: true, requiresAuth: true },
             },
-            // {
-            //     path: "/testimonials",
-            //     name: "testimonials",
-            //     component: () => import("@/views/testimonials/index.vue"),
-            //     meta: { hideFooter: true, requiresAuth: true },
-            // },
-            // {
-            //     path: "/faqs",
-            //     name: "faqs",
-            //     component: () => import("@/views/faqs/index.vue"),
-            //     meta: { hideFooter: true, requiresAuth: true },
-            // },
-            // {
-            //     path: "/media",
-            //     name: "media",
-            //     component: () => import("@/views/media/index.vue"),
-            //     meta: { hideFooter: true, requiresAuth: true },
-            // },
 
         ],
     },

@@ -206,7 +206,7 @@ onMounted(async () => {
                     
                     <div class="relative z-0 w-full mb-5 lg:mb-0 group">
                         <input type="text" name="name" 
-                            class="block w-full p-3 text-sm text-gray-900 bg-transparent border border-gray-200 rounded-lg appearance-none peer hover:border-black dark:hover:border-white dark:text-white dark:border-gray-600 dark:focus:border-primary-500 focus:outline-none focus:ring-0 focus:border-primary-500"
+                            class="block w-full p-3 text-sm text-gray-900 bg-transparent border border-gray-200 rounded-lg appearance-none peer hover:border-black dark:hover:border-white dark:text-white dark:border-gray-600 dark:focus:border-brand-primary focus:outline-none focus:ring-0 focus:border-brand-primary"
                             placeholder=" " required />
                         <label for="name"
                             class="absolute text-sm px-1 ltr:ml-2 rtl:mr-2 text-gray-400 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 bg-white dark:bg-gray-800 z-10 origin-[0] peer-focus:font-medium peer-focus:text-primary-500 peer-focus:dark:text-primary-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6">
@@ -363,7 +363,7 @@ onMounted(async () => {
                   Edit Customer
               </h6>
               <div class="relative z-0 w-full my-5 group px-4">
-                    <input v-model="customerData.name" type="text" name="name"  class="block w-full p-3 text-sm text-gray-900 bg-transparent border border-gray-200 rounded-lg appearance-none peer hover:border-black dark:hover:border-white dark:text-white dark:border-gray-600 dark:focus:border-primary-500 focus:outline-none focus:ring-0 focus:border-primary-500" placeholder="" >
+                    <input v-model="customerData.name" type="text" name="name"  class="block w-full p-3 text-sm text-gray-900 bg-transparent border border-gray-200 rounded-lg appearance-none peer hover:border-black dark:hover:border-white dark:text-white dark:border-gray-600 dark:focus:border-brand-primary focus:outline-none focus:ring-0 focus:border-brand-primary" placeholder="" >
                     <label for="name" class="absolute text-sm px-1 ltr:ml-2 rtl:mr-2 text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 bg-white dark:bg-gray-800 z-10 origin-[0] peer-focus:font-medium peer-focus:text-primary-500 peer-focus:dark:text-primary-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6 ,">Nama Customer</label>
                 </div>
               <div class="relative z-0 w-full my-5 group px-4">

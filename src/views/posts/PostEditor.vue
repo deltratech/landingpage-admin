@@ -135,61 +135,60 @@ onBeforeUnmount(() => {
 </script>
 
 <template>
-    <div class="flex flex-col h-full min-h-screen bg-gray-50 dark:bg-gray-900">
+    <div class="fixed inset-0 z-40 bg-body dark:bg-gray-900 flex flex-col text-gray-900 dark:text-gray-100">
 
-        <!-- Top bar -->
-        <div class="sticky top-0 z-30 flex items-center justify-between px-4 py-3 bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 shadow-sm">
-            <div class="flex items-center gap-3">
+        <!-- Sticky top bar -->
+        <div class="h-[60px] flex-shrink-0 bg-white dark:bg-gray-900 border-b border-gray-100 dark:border-gray-800 px-6 flex items-center justify-between gap-4">
+            <div class="flex items-center gap-3 min-w-0">
                 <button @click="router.push('/posts')"
-                    class="flex items-center gap-1.5 text-sm text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors">
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
-                    </svg>
-                    Posts
+                    class="flex items-center gap-1.5 text-[13px] font-medium text-gray-500 hover:text-gray-900 dark:hover:text-white transition-colors">
+                    <svg class="size-[15px]" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><line x1="19" y1="12" x2="5" y2="12" /><polyline points="12 19 5 12 12 5" /></svg>
+                    Back to Posts
                 </button>
-                <span class="text-gray-300 dark:text-gray-600">|</span>
-                <span class="text-sm font-medium text-gray-700 dark:text-gray-300">{{ isEdit ? 'Edit Post' : 'New Post' }}</span>
+                <span class="text-gray-200 dark:text-gray-700">|</span>
+                <div class="min-w-0">
+                    <div class="text-[14px] font-semibold truncate text-gray-900 dark:text-white">{{ title || (isEdit ? 'Edit Post' : 'New Post') }}</div>
+                    <div v-if="saved" class="text-[11px] text-success-600 dark:text-success-400">Saved ✓</div>
+                    <div v-else-if="error" class="text-[11px] text-error-500">{{ error }}</div>
+                    <div v-else class="text-[11px] text-gray-400">Autosaved</div>
+                </div>
             </div>
-
             <div class="flex items-center gap-2">
-                <span v-if="saved" class="text-xs text-success-600 dark:text-success-400 font-medium">Saved ✓</span>
-                <span v-if="error" class="text-xs text-error-500 font-medium">{{ error }}</span>
-
-                <span class="px-2 py-0.5 rounded-full text-xs font-medium"
-                    :class="status === 'published' ? 'bg-success-100 text-success-700' : 'bg-warning-100 text-warning-700'">
-                    {{ status }}
-                </span>
-
+                <select v-model="status"
+                    class="h-9 px-3 pr-8 rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 text-[13px] appearance-none focus-primary">
+                    <option value="draft">Draft</option>
+                    <option value="published">Published</option>
+                </select>
                 <button @click="save(false)" :disabled="saving"
-                    class="btn btn-sm bg-gray-100 text-gray-700 hover:bg-gray-200 dark:bg-gray-700 dark:text-gray-200 dark:hover:bg-gray-600">
-                    {{ saving ? 'Saving...' : 'Save draft' }}
+                    class="inline-flex items-center justify-center gap-1.5 font-medium rounded-lg h-9 px-4 text-[13px] border border-gray-200 dark:border-gray-700 text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors disabled:opacity-60">
+                    {{ saving ? 'Saving…' : 'Save draft' }}
                 </button>
                 <button @click="save(true)" :disabled="saving"
-                    class="btn btn-sm bg-primary-500 text-white hover:bg-primary-600">
+                    class="inline-flex items-center justify-center gap-1.5 font-medium rounded-lg h-9 px-4 text-[13px] bg-brand-primary text-white hover:bg-brand-primary/90 active:bg-brand-primary/80 shadow-sm disabled:opacity-60 transition-colors">
                     {{ status === 'published' ? 'Update' : 'Publish' }}
                 </button>
             </div>
         </div>
 
         <!-- Body -->
-        <div class="flex flex-1 overflow-hidden">
+        <div class="flex-1 overflow-y-auto scroll-thin">
+            <div class="max-w-[1280px] mx-auto px-6 py-8 grid grid-cols-1 lg:grid-cols-[1fr_340px] gap-6">
 
             <!-- Main editor area -->
-            <div class="flex-1 overflow-y-auto">
-                <div class="max-w-7xl mx-auto px-6 py-8">
+            <div>
 
                     <!-- Title -->
                     <input
                         v-model="title"
                         @blur="autoSlug"
                         type="text"
-                        placeholder="Add title"
-                        class="w-full text-4xl font-bold text-gray-900 dark:text-white bg-transparent border-none outline-none placeholder-gray-300 dark:placeholder-gray-600 mb-6 leading-tight"
+                        placeholder="Post title…"
+                        class="w-full text-[32px] font-bold tracking-tight bg-transparent outline-none placeholder-gray-300 dark:placeholder-gray-600 mb-4 leading-tight text-gray-900 dark:text-white"
                     />
 
                     <!-- Toolbar -->
                     <div v-if="editor"
-                        class="flex flex-wrap items-center gap-0.5 p-1.5 mb-2 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-sm sticky top-[61px] z-20">
+                        class="flex flex-wrap items-center gap-0.5 p-1.5 mb-4 bg-white/90 dark:bg-gray-900/90 backdrop-blur border border-gray-100 dark:border-gray-700 rounded-lg shadow-sm sticky top-0 z-10">
 
                         <!-- Undo / Redo -->
                         <button @click="editor.chain().focus().undo().run()" title="Undo"
@@ -284,62 +283,59 @@ onBeforeUnmount(() => {
                     </div>
 
                     <!-- Editor -->
-                    <div class="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-sm overflow-hidden">
+                    <div class="bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-700 rounded-xl shadow-card overflow-hidden">
                         <EditorContent :editor="editor" class="editor-content" />
                     </div>
 
                 </div>
-            </div>
 
             <!-- Right sidebar -->
-            <div class="w-72 shrink-0 border-l border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 overflow-y-auto">
-                <div class="p-5 space-y-6">
+            <div class="space-y-5">
 
-                    <!-- Status & Visibility -->
-                    <div>
-                        <h3 class="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-3 pb-2 border-b border-gray-100 dark:border-gray-700">
-                            Status &amp; Visibility
-                        </h3>
-                        <div class="relative">
-                            <select v-model="status"
-                                class="w-full text-sm p-2 border border-gray-200 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none focus:border-primary-500">
-                                <option value="draft">Draft</option>
-                                <option value="published">Published</option>
-                            </select>
+                    <!-- Status card -->
+                    <div class="bg-white dark:bg-gray-800 rounded-xl shadow-card border border-gray-100 dark:border-gray-700/80 p-5">
+                        <div class="text-[11px] font-semibold uppercase tracking-wider text-gray-400 mb-2">Status</div>
+                        <select v-model="status"
+                            class="w-full h-10 px-3 rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 text-[13px] appearance-none focus-primary">
+                            <option value="draft">Draft</option>
+                            <option value="published">Published</option>
+                        </select>
+                        <div class="mt-2 text-[11px] text-gray-400">
+                            {{ status === 'published' ? 'Visible on your public site.' : 'Only visible to your team.' }}
                         </div>
                     </div>
 
-                    <!-- Permalink -->
-                    <div>
-                        <h3 class="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-3 pb-2 border-b border-gray-100 dark:border-gray-700">
-                            Permalink
-                        </h3>
-                        <label class="text-xs text-gray-500 dark:text-gray-400 mb-1 block">Slug</label>
-                        <input v-model="slug" type="text" placeholder="post-slug"
-                            class="w-full text-sm p-2 border border-gray-200 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none focus:border-primary-500" />
-                    </div>
-
-                    <!-- Featured Image -->
-                    <div>
-                        <h3 class="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-3 pb-2 border-b border-gray-100 dark:border-gray-700">
-                            Featured Image
-                        </h3>
-                        <div v-if="coverImage" class="mb-2 rounded-lg overflow-hidden border border-gray-200 dark:border-gray-600">
-                            <img :src="coverImage" alt="Cover" class="w-full h-32 object-cover" @error="(e) => e.target.style.display='none'" />
+                    <!-- Permalink card -->
+                    <div class="bg-white dark:bg-gray-800 rounded-xl shadow-card border border-gray-100 dark:border-gray-700/80 p-5">
+                        <div class="text-[11px] font-semibold uppercase tracking-wider text-gray-400 mb-2">Permalink</div>
+                        <div class="flex items-center gap-1 text-[12px] font-mono text-gray-500 mb-2 flex-wrap">
+                            <span class="text-gray-400">/posts/</span>
+                            <input v-model="slug" placeholder="post-slug"
+                                class="flex-1 min-w-0 bg-transparent outline-none text-brand-primary dark:text-brand-accent" />
                         </div>
-                        <input v-model="coverImage" type="url" placeholder="https://..."
-                            class="w-full text-sm p-2 border border-gray-200 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none focus:border-primary-500" />
-                        <p class="text-xs text-gray-400 dark:text-gray-500 mt-1">Paste an image URL above</p>
+                        <div class="text-[11px] text-gray-400">Auto-generated from the title. Edit to override.</div>
                     </div>
 
-                    <!-- Excerpt -->
-                    <div>
-                        <h3 class="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-3 pb-2 border-b border-gray-100 dark:border-gray-700">
-                            Excerpt
-                        </h3>
-                        <textarea v-model="excerpt" rows="3" placeholder="Short description..."
-                            class="w-full text-sm p-2 border border-gray-200 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none focus:border-primary-500 resize-none"></textarea>
-                        <p class="text-xs text-gray-400 dark:text-gray-500 mt-1">Shown on post lists and social previews.</p>
+                    <!-- Featured image card -->
+                    <div class="bg-white dark:bg-gray-800 rounded-xl shadow-card border border-gray-100 dark:border-gray-700/80 p-5">
+                        <div class="text-[11px] font-semibold uppercase tracking-wider text-gray-400 mb-2">Featured image</div>
+                        <div v-if="coverImage" class="mb-3 rounded-lg overflow-hidden border border-gray-100 dark:border-gray-700">
+                            <img :src="coverImage" alt="Cover" class="w-full aspect-video object-cover" @error="(e) => e.target.style.display='none'" />
+                        </div>
+                        <div class="placeholder-stripes border-2 border-dashed border-gray-200 dark:border-gray-700 rounded-lg aspect-video flex flex-col items-center justify-center text-gray-400 cursor-pointer hover:border-brand-primary/60 dark:hover:border-brand-primary transition-colors"
+                            v-if="!coverImage">
+                            <svg class="size-5" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z" /><circle cx="12" cy="13" r="4" /></svg>
+                            <div class="text-[12px] mt-2 font-medium">Paste URL below</div>
+                        </div>
+                        <input v-model="coverImage" type="url" placeholder="https://…" class="w-full h-9 px-3 mt-3 rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-[13px] focus-primary text-gray-900 dark:text-gray-100 placeholder-gray-400" />
+                    </div>
+
+                    <!-- Excerpt card -->
+                    <div class="bg-white dark:bg-gray-800 rounded-xl shadow-card border border-gray-100 dark:border-gray-700/80 p-5">
+                        <div class="text-[11px] font-semibold uppercase tracking-wider text-gray-400 mb-2">Excerpt</div>
+                        <textarea v-model="excerpt" rows="3" placeholder="A short summary that appears in listings and social previews."
+                            class="w-full px-3 py-2 rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 placeholder-gray-400 focus-primary text-[13px] resize-none" />
+                        <div class="mt-1.5 text-[11px] text-gray-400 num">{{ excerpt.length }} / 160 characters</div>
                     </div>
 
                 </div>
@@ -348,32 +344,38 @@ onBeforeUnmount(() => {
     </div>
 
     <!-- Link dialog -->
-    <div v-if="showLinkDialog" class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
-        <div class="bg-white dark:bg-gray-800 rounded-xl shadow-dialog p-6 w-full max-w-sm mx-4">
-            <h6 class="font-semibold text-gray-900 dark:text-gray-200 mb-4">Insert Link</h6>
-            <input v-model="linkUrl" type="url" placeholder="https://example.com"
-                class="w-full p-2.5 text-sm border border-gray-200 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none focus:border-primary-500 mb-4"
-                @keyup.enter="applyLink" />
-            <div class="flex justify-end gap-3">
-                <button class="btn btn-sm btn-secondary" @click="showLinkDialog = false">Cancel</button>
-                <button class="btn btn-sm bg-primary-500 text-white" @click="applyLink">Apply</button>
+    <Teleport to="body">
+        <div v-if="showLinkDialog" class="fixed inset-0 z-50 flex items-center justify-center p-4">
+            <div class="absolute inset-0 bg-gray-900/50 backdrop-blur-[2px] fade-in" @click="showLinkDialog = false" />
+            <div class="relative bg-white dark:bg-gray-800 rounded-xl shadow-dialog w-full max-w-sm border border-gray-100 dark:border-gray-700 pop-in p-6">
+                <h3 class="text-[16px] font-semibold text-gray-900 dark:text-white mb-4">Insert Link</h3>
+                <input v-model="linkUrl" type="url" placeholder="https://example.com"
+                    class="w-full h-10 px-3 rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 placeholder-gray-400 focus-primary text-[13px] mb-4"
+                    @keyup.enter="applyLink" />
+                <div class="flex justify-end gap-2">
+                    <button @click="showLinkDialog = false" class="inline-flex items-center justify-center font-medium rounded-lg h-9 px-4 text-[13px] border border-gray-200 dark:border-gray-700 text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-800">Cancel</button>
+                    <button @click="applyLink" class="inline-flex items-center justify-center font-medium rounded-lg h-9 px-4 text-[13px] bg-brand-primary text-white hover:bg-brand-primary/90">Apply</button>
+                </div>
             </div>
         </div>
-    </div>
+    </Teleport>
 
     <!-- Image dialog -->
-    <div v-if="showImageDialog" class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
-        <div class="bg-white dark:bg-gray-800 rounded-xl shadow-dialog p-6 w-full max-w-sm mx-4">
-            <h6 class="font-semibold text-gray-900 dark:text-gray-200 mb-4">Insert Image</h6>
-            <input v-model="imageUrl" type="url" placeholder="https://example.com/image.jpg"
-                class="w-full p-2.5 text-sm border border-gray-200 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white focus:outline-none focus:border-primary-500 mb-4"
-                @keyup.enter="insertImage" />
-            <div class="flex justify-end gap-3">
-                <button class="btn btn-sm btn-secondary" @click="showImageDialog = false">Cancel</button>
-                <button class="btn btn-sm bg-primary-500 text-white" @click="insertImage">Insert</button>
+    <Teleport to="body">
+        <div v-if="showImageDialog" class="fixed inset-0 z-50 flex items-center justify-center p-4">
+            <div class="absolute inset-0 bg-gray-900/50 backdrop-blur-[2px] fade-in" @click="showImageDialog = false" />
+            <div class="relative bg-white dark:bg-gray-800 rounded-xl shadow-dialog w-full max-w-sm border border-gray-100 dark:border-gray-700 pop-in p-6">
+                <h3 class="text-[16px] font-semibold text-gray-900 dark:text-white mb-4">Insert Image</h3>
+                <input v-model="imageUrl" type="url" placeholder="https://example.com/image.jpg"
+                    class="w-full h-10 px-3 rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 placeholder-gray-400 focus-primary text-[13px] mb-4"
+                    @keyup.enter="insertImage" />
+                <div class="flex justify-end gap-2">
+                    <button @click="showImageDialog = false" class="inline-flex items-center justify-center font-medium rounded-lg h-9 px-4 text-[13px] border border-gray-200 dark:border-gray-700 text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-800">Cancel</button>
+                    <button @click="insertImage" class="inline-flex items-center justify-center font-medium rounded-lg h-9 px-4 text-[13px] bg-brand-primary text-white hover:bg-brand-primary/90">Insert</button>
+                </div>
             </div>
         </div>
-    </div>
+    </Teleport>
 </template>
 
 <style>
@@ -381,7 +383,7 @@ onBeforeUnmount(() => {
     @apply p-1.5 rounded text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors text-sm flex items-center justify-center min-w-[28px] min-h-[28px];
 }
 .toolbar-btn.active {
-    @apply bg-primary-100 text-primary-600 dark:bg-primary-900/40 dark:text-primary-400;
+    @apply bg-brand-primary/[0.12] text-brand-primary dark:bg-brand-primary/[0.35] dark:text-brand-accent;
 }
 .toolbar-divider {
     @apply w-px h-5 bg-gray-200 dark:bg-gray-600 mx-0.5;
@@ -403,7 +405,7 @@ onBeforeUnmount(() => {
 .editor-content .ProseMirror em    { @apply italic; }
 .editor-content .ProseMirror u     { @apply underline; }
 .editor-content .ProseMirror s     { @apply line-through; }
-.editor-content .ProseMirror a     { @apply text-primary-600 dark:text-primary-400 underline cursor-pointer; }
+.editor-content .ProseMirror a     { @apply text-brand-primary dark:text-brand-accent underline cursor-pointer; }
 .editor-content .ProseMirror blockquote {
     @apply border-l-4 border-gray-300 dark:border-gray-600 pl-4 italic text-gray-500 dark:text-gray-400 my-4;
 }
