@@ -1,18 +1,16 @@
 <script setup>
 import { useRoute } from 'vue-router'
 import { toggleTheme, layout, toggleSidebarCollapse } from '@/stores/layout'
-import { useAuthStore } from '@/stores/auth'
-import { computed } from 'vue'
 
 const route = useRoute()
-const authStore = useAuthStore()
-const userInitials = computed(() => authStore.initials)
 
 const PAGES = {
     dashboard:    { title: 'Dashboard',     subtitle: 'Overview of contacts, posts, and recent activity' },
+    analytics:    { title: 'Analytics',     subtitle: 'Google Analytics traffic and engagement data' },
     contacts:     { title: 'Contacts',      subtitle: 'Manage school contacts and form submissions' },
     users:        { title: 'Users',         subtitle: 'Team members and permissions' },
     posts:        { title: 'Posts',         subtitle: 'Drafts, published articles, and revisions' },
+    tags:         { title: 'Tags',          subtitle: 'Categorize and organize your posts' },
 }
 
 const pageMeta = () => PAGES[route.name] ?? { title: 'Deltra Admin', subtitle: '' }

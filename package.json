@@ -40,6 +40,7 @@
     "v-lazy-image": "^2.1.1",
     "vue": "^3.4.29",
     "vue-easy-lightbox": "^1.19.0",
+    "vue-gtag": "^3.7.1",
     "vue-remix-icons": "^3.12.0",
     "vue-router": "^4.4.4",
     "vue3-apexcharts": "^1.8.0",

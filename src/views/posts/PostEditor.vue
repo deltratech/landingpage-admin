@@ -9,10 +9,12 @@ import Image from '@tiptap/extension-image'
 import TextAlign from '@tiptap/extension-text-align'
 import Placeholder from '@tiptap/extension-placeholder'
 import { usePosts } from '@/composables/usePosts'
+import { useTags } from '@/composables/useTags'
 
 const router = useRouter()
 const route = useRoute()
 const { getPosts, getPostBySlug, createPost, updatePost, loading } = usePosts()
+const { tags: allTags, getTags } = useTags()
 
 const isEdit = computed(() => !!route.params.id)
 const postId = computed(() => route.params.id)
@@ -22,6 +24,7 @@ const slug = ref('')
 const status = ref('draft')
 const coverImage = ref('')
 const excerpt = ref('')
+const selectedTagIds = ref([])
 const saving = ref(false)
 const saved = ref(false)
 const error = ref('')
@@ -92,6 +95,7 @@ const save = async (publish = false) => {
     }
     if (excerpt.value) payload.excerpt = excerpt.value
     if (coverImage.value) payload.coverImage = coverImage.value
+    if (selectedTagIds.value.length) payload.tagIds = selectedTagIds.value
 
     saving.value = true
     let result
@@ -113,6 +117,7 @@ const save = async (publish = false) => {
 }
 
 onMounted(async () => {
+    await getTags()
     if (isEdit.value) {
         const posts = await getPosts()
         const post = posts?.find(p => p.id == postId.value)
@@ -122,6 +127,7 @@ onMounted(async () => {
             status.value = post.status ?? 'draft'
             coverImage.value = post.coverImage ?? ''
             excerpt.value = post.excerpt ?? ''
+            selectedTagIds.value = post.tags?.map(t => t.id) ?? post.tagIds ?? []
             if (post.content) {
                 editor.value?.commands.setContent(post.content)
             }
@@ -172,7 +178,7 @@ onBeforeUnmount(() => {
 
         <!-- Body -->
         <div class="flex-1 overflow-y-auto scroll-thin">
-            <div class="max-w-[1280px] mx-auto px-6 py-8 grid grid-cols-1 lg:grid-cols-[1fr_340px] gap-6">
+            <div class="max-w-[1920px] mx-auto px-6 py-8 grid grid-cols-1 lg:grid-cols-[1fr_340px] gap-6">
 
             <!-- Main editor area -->
             <div>
@@ -328,6 +334,26 @@ onBeforeUnmount(() => {
                             <div class="text-[12px] mt-2 font-medium">Paste URL below</div>
                         </div>
                         <input v-model="coverImage" type="url" placeholder="https://…" class="w-full h-9 px-3 mt-3 rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-[13px] focus-primary text-gray-900 dark:text-gray-100 placeholder-gray-400" />
+                    </div>
+
+                    <!-- Tags card -->
+                    <div class="bg-white dark:bg-gray-800 rounded-xl shadow-card border border-gray-100 dark:border-gray-700/80 p-5">
+                        <div class="text-[11px] font-semibold uppercase tracking-wider text-gray-400 mb-3">Tags</div>
+                        <div v-if="allTags.length" class="flex flex-wrap gap-1.5">
+                            <button
+                                v-for="tag in allTags"
+                                :key="tag.id"
+                                type="button"
+                                @click="selectedTagIds.includes(tag.id) ? selectedTagIds.splice(selectedTagIds.indexOf(tag.id), 1) : selectedTagIds.push(tag.id)"
+                                class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[11px] font-medium border transition-colors"
+                                :class="selectedTagIds.includes(tag.id)
+                                    ? 'bg-brand-primary text-white border-brand-primary'
+                                    : 'bg-gray-50 dark:bg-gray-700 text-gray-600 dark:text-gray-300 border-gray-200 dark:border-gray-600 hover:border-brand-primary/50'"
+                            >
+                                {{ tag.name }}
+                            </button>
+                        </div>
+                        <div v-else class="text-[12px] text-gray-400">No tags yet. Create some in the Tags menu.</div>
                     </div>
 
                     <!-- Excerpt card -->

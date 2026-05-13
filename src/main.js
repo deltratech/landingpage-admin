@@ -1,4 +1,3 @@
-import SimpleBar from 'simplebar-vue'
 import "preline/preline"
 import '@fontsource/inter'
 
@@ -7,6 +6,7 @@ import './assets/scss/plugins.scss'
 import './assets/scss/tailwind.scss'
 import { createPinia } from 'pinia'
 import axios from 'axios'
+import { createGtag } from 'vue-gtag'
 
 import { createApp } from 'vue'
 import App from './App.vue'
@@ -29,5 +29,6 @@ const pinia = createPinia()
 
 app.use(router)
 app.use(pinia)
+app.use(createGtag({ tagId: import.meta.env.VITE_GA_MEASUREMENT_ID ?? '' }), router)
 
 app.mount('#app')

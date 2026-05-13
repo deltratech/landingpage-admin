@@ -15,11 +15,17 @@ const routes = [
         path: '/',
         component: MainLayout,
         children: [
-            { 
-                path: "/dashboard", 
+            {
+                path: "/dashboard",
                 name: "dashboard",
                 component: () => import("@/views/dashboard/index.vue"),
                 meta: { requiresAuth: true }
+            },
+            {
+                path: "/analytics",
+                name: "analytics",
+                component: () => import("@/views/analytics/index.vue"),
+                meta: { requiresAuth: true },
             },            
             {
                 path: "/users",
@@ -38,6 +44,12 @@ const routes = [
                 name: "posts",
                 component: () => import("@/views/posts/index.vue"),
                 meta: { hideFooter: true, requiresAuth: true },
+            },
+            {
+                path: "/tags",
+                name: "tags",
+                component: () => import("@/views/tags/index.vue"),
+                meta: { requiresAuth: true },
             },
 
         ],
@@ -69,7 +81,7 @@ const router = createRouter({
 })
 
 
-router.beforeEach((to, from, next) => {
+router.beforeEach((to, _from, next) => {
     const accessToken = localStorage.getItem("accessToken")
     
     if (accessToken) {

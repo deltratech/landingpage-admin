@@ -25,6 +25,7 @@ const NAV = [
         section: 'Overview',
         items: [
             { to: '/dashboard', name: 'dashboard', label: 'Dashboard' },
+            { to: '/analytics', name: 'analytics', label: 'Analytics' },
         ],
     },
     {
@@ -38,6 +39,7 @@ const NAV = [
         section: 'Content',
         items: [
             { to: '/posts', name: 'posts', label: 'Posts' },
+            { to: '/tags', name: 'tags', label: 'Tags' },
         ],
     },
 ]
@@ -96,6 +98,12 @@ const isActive = (to) => route.path === to || route.path.startsWith(to + '/')
                         </svg>
                         <svg v-else-if="item.name === 'posts'" class="size-[18px] flex-shrink-0" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
                             <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" /><polyline points="14 2 14 8 20 8" /><line x1="8" y1="13" x2="16" y2="13" /><line x1="8" y1="17" x2="13" y2="17" />
+                        </svg>
+                        <svg v-else-if="item.name === 'analytics'" class="size-[18px] flex-shrink-0" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
+                            <line x1="18" y1="20" x2="18" y2="10" /><line x1="12" y1="20" x2="12" y2="4" /><line x1="6" y1="20" x2="6" y2="14" />
+                        </svg>
+                        <svg v-else-if="item.name === 'tags'" class="size-[18px] flex-shrink-0" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
+                            <path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/>
                         </svg>
 
 <span v-if="!collapsed()" class="flex-1 text-left truncate">{{ item.label }}</span>
