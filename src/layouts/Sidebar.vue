@@ -25,7 +25,6 @@ const NAV = [
         section: 'Overview',
         items: [
             { to: '/dashboard', name: 'dashboard', label: 'Dashboard' },
-            { to: '/analytics', name: 'analytics', label: 'Analytics' },
         ],
     },
     {
