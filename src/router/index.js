@@ -40,6 +40,12 @@ const routes = [
                 meta: { hideFooter: true, requiresAuth: true },  // Footer is hidden
             },
             {
+                path: "/request-demo",
+                name: "request-demo",
+                component: () => import("@/views/request-demo/index.vue"),
+                meta: { hideFooter: true, requiresAuth: true },
+            },
+            {
                 path: "/posts",
                 name: "posts",
                 component: () => import("@/views/posts/index.vue"),

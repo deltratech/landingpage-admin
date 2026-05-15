@@ -31,6 +31,7 @@ const NAV = [
         section: 'Management',
         items: [
             { to: '/contacts', name: 'contacts', label: 'Contacts' },
+            { to: '/request-demo', name: 'request-demo', label: 'Demo Requests' },
             { to: '/users', name: 'users', label: 'Users' },
         ],
     },
@@ -103,6 +104,9 @@ const isActive = (to) => route.path === to || route.path.startsWith(to + '/')
                         </svg>
                         <svg v-else-if="item.name === 'tags'" class="size-[18px] flex-shrink-0" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
                             <path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/>
+                        </svg>
+                        <svg v-else-if="item.name === 'request-demo'" class="size-[18px] flex-shrink-0" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
+                            <rect x="2" y="4" width="20" height="16" rx="2" /><path d="M22 7l-9.17 6.5a2 2 0 0 1-2.66 0L2 7"/>
                         </svg>
 
 <span v-if="!collapsed()" class="flex-1 text-left truncate">{{ item.label }}</span>
